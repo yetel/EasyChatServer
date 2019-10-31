@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.easychat.mapper.FriendMapper">
+    <insert id="addFriend" parameterType="com.easychat.bean.UserFrind">
+        insert into sp_user_friend(user_id, friend_id) values (#{userId}, #{friendId})
+    </insert>
+
+    <delete id="removeFriend" parameterType="com.easychat.bean.UserFrind">
+        delete from sp_user_friend where user_id = #{userId} and friend_id = #{friendId}
+    </delete>
+
+    <delete id="removeAllFriend" parameterType="string">
+        delete from sp_user_friend where user_id = #{userId}
+    </delete>
+
+    <select id="queryHasFriend" resultType="com.easychat.bean.UserFrind">
+        select user_id as userId, friend_id as friendId, remark from sp_user_friend where user_id = #{userId} and friend_id = #{friendId}
+    </select>
+    
+    <select id="getFriends" resultType="com.easychat.bean.User">
+        select su.user_id userId, su.user_name userName, su.nick_name nickName
+        , su.avatar , su.signature, suf.remark from sp_user_friend suf left join sp_user su on suf.friend_id = su.user_id
+        where suf.user_id = #{userId}
+    </select>
+    <select id="getFriend" resultType="com.easychat.bean.User">
+        select su.user_id userId, su.user_name userName, su.nick_name nickName
+        , su.avatar , su.signature, suf.remark from sp_user_friend suf left join sp_user su on suf.user_id = su.user_id
+        where suf.user_id = #{userId} and suf.friend_id = #{friendId}
+    </select>
+    
+    <update id="updateRemark">
+        update sp_user_friend set remark = #{remark} where user_id = #{userId} and friend_id = #{friendId}
+    </update>
+
+    <insert id="addInviteFriend" parameterType="com.easychat.bean.UserFrind">
+        insert into sp_invite_user_friend(user_id, friend_id) values (#{userId}, #{friendId})
+    </insert>
+
+    <delete id="removeInviteFriend" parameterType="com.easychat.bean.UserFrind">
+        delete from sp_invite_user_friend where user_id = #{userId} and friend_id = #{friendId}
+    </delete>
+
+    <delete id="removeAllInviteFriend" parameterType="string">
+        delete from sp_invite_user_friend where user_id = #{userId}
+    </delete>
+
+    <select id="queryHasInviteFriend" resultType="com.easychat.bean.UserFrind">
+        select user_id as userId, friend_id as friendId from sp_invite_user_friend where user_id = #{userId} and friend_id = #{friendId}
+    </select>
+</mapper>

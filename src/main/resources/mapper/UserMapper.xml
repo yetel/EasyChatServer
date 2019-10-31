@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.easychat.mapper.UserMapper">
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="userId" parameterType="com.easychat.bean.User">
+        insert into sp_user(user_id, user_name, password, nick_name) values (#{userId}, #{userName}, #{password}, #{nickName})
+    </insert>
+    
+    <select id="queryById" resultType="com.easychat.bean.User">
+        select user_id as userId, user_name as userName, password,  nick_name as nickName, avatar, signature from sp_user where user_id = #{userId}
+    </select>
+    <select id="queryByName" resultType="com.easychat.bean.User">
+        select user_id as userId, user_name as userName, password,  nick_name as nickName, avatar, signature from sp_user where user_name = #{userName}
+    </select>
+    
+    <select id="fuzzyQueryByName" resultType="com.easychat.bean.User">
+        select user_id as userId, user_name as userName, password,  nick_name as nickName, avatar, signature from sp_user where user_name like CONCAT('%',#{userName},'%')
+    </select>
+    
+    <update id="updateBySelective">
+        update sp_user set
+        <trim suffixOverrides=",">
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="nickName != null">
+                nick_name = #{nickName},
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar},
+            </if>
+            <if test="signature != null">
+                signature = #{signature},
+            </if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+    
+    <delete id="deleteById" parameterType="string">
+        delete from sp_user where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteByName" parameterType="string">
+        delete from sp_user where user_id = #{userName}
+    </delete>
+
+    <select id="fuzzyQueryAll" resultType="java.util.LinkedHashMap">
+        select user_id id, 0 `type` from `sp_user` 
+        where (user_id like CONCAT('%',#{key},'%')
+        or user_name like CONCAT('%',#{key},'%')
+        or nick_name like CONCAT('%',#{key},'%'))
+        union
+        select group_id id, 1 `type` from sp_group
+        where (group_id like CONCAT('%',#{key},'%')
+        or group_name like CONCAT('%',#{key},'%'))
+    </select>
+</mapper>

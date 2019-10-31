@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.easychat.mapper.GroupMapper">
+
+    <insert id="addGroup" useGeneratedKeys="true" keyProperty="groupId" parameterType="com.easychat.bean.Group">
+        insert into sp_group(group_name, main_user_id) values (#{groupName}, #{mainUserId})
+    </insert>
+    
+    <select id="getMembers" parameterType="string" resultType="string">
+        select user_id from sp_user_group where group_id = #{groupId}
+    </select>
+
+    <select id="getMemberInfo" parameterType="string" resultType="com.easychat.bean.User">
+        select su.user_id as userId, su.user_name as userName, su.password,  su.nick_name as nickName, su.avatar, su.signature 
+        from sp_user_group sug left join sp_user su 
+        on sug.user_id = su.user_id
+        where sug.group_id = #{groupId}
+    </select>
+    
+    <select id="getGroup" parameterType="string" resultType="com.easychat.bean.Group">
+        select group_id groupId, group_name groupName, main_user_id mainUserId, avatar from sp_group where group_id = #{groupId}
+    </select>
+    
+    <insert id="addmember" parameterType="com.easychat.bean.UserGroup">
+        insert into sp_user_group(user_id, group_id) values (#{userId}, #{groupId})
+    </insert>
+    
+    <select id="queryMemberNum" resultType="integer">
+        select count(*) from sp_user_group where group_id = #{groupId}
+    </select>
+    
+    <delete id="removemember">
+        delete from sp_user_group where user_id = #{userId} and group_id = #{groupId}
+    </delete>
+    
+    <delete id="removeAllmember" parameterType="string">
+        delete from sp_user_group where group_id = #{groupId}
+    </delete>
+    
+    <select id="queryHasmember" resultType="com.easychat.bean.UserGroup">
+        select user_id as userId, group_id as groupId from sp_user_group where user_id = #{userId} and group_id = #{groupId}
+    </select>
+
+    <insert id="addInviteMember" parameterType="com.easychat.bean.UserGroup">
+        insert into sp_invite_user_group(user_id, group_id) values (#{userId}, #{groupId})
+    </insert>
+
+    <delete id="removeInviteMember" parameterType="com.easychat.bean.UserGroup">
+        delete from sp_invite_user_group where user_id = #{userId} and group_id = #{groupId}
+    </delete>
+
+    <delete id="removeAllInviteMember" parameterType="string">
+        delete from sp_invite_user_group where group_id = #{groupId}
+    </delete>
+
+    <select id="queryHasInviteMember" resultType="com.easychat.bean.UserGroup">
+        select user_id as userId, group_id as groupId from sp_invite_user_group where user_id = #{userId} and group_id = #{groupId}
+    </select>
+    
+    <select id="queryGroupsByUserId" parameterType="string" resultType="com.easychat.bean.Group">
+        select sg.group_id groupId, sg.group_name groupName, sg.avatar, sg.main_user_id mainUserId from sp_user_group sug left join sp_group sg on sug.group_id = sg.group_id
+        where sug.user_id = #{userId}
+    </select>
+    <select id="fuzzyQueryGroupsByName" parameterType="string" resultType="com.easychat.bean.Group">
+        select group_id groupId, group_name groupName, avatar, main_user_id mainUserId from sp_group
+        where groupName like CONCAT('%',#{groupName},'%')
+    </select>
+    <update id="update">
+        update sp_group set
+        <trim suffixOverrides=",">
+            <if test="groupName != null">
+                group_name = #{groupName},
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar},
+            </if>
+        </trim>
+        where group_id = #{groupId}
+    </update>
+</mapper>

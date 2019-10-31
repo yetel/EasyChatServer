@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.easychat.mapper.AppVersionMapper">
+
+    <resultMap id="BaseResultMap" type="com.easychat.bean.AppVersion">
+        <result column="version_number" jdbcType="INTEGER" property="versionCode" />
+        <result column="version_name" jdbcType="VARCHAR" property="versionName" />
+        <result column="remark" jdbcType="VARCHAR" property="versionDesc" />
+        <result column="download_url" jdbcType="VARCHAR" property="downloadUrl" />
+        <result column="release_time" jdbcType="VARCHAR" property="releaseTime" />
+    </resultMap>
+    
+    <sql id="base_column">
+        version_number, version_name, remark, download_url, release_time
+    </sql>
+
+    <select id="queryNewVersion" resultMap="BaseResultMap">
+        select 
+        <include refid="base_column"/>
+        from sp_app_version
+        where app_type = #{appType} 
+        and version_number > #{versionNum}
+        order by release_time desc limit 1
+    </select>
+    
+    <select id="isForcedUpgrade" resultType="java.lang.Integer">
+        select upgrade_compulsively from sp_app_version
+        where app_type = #{appType} 
+        and version_number > #{versionNum}
+        and upgrade_compulsively = 1
+        limit 1
+    </select>
+
+</mapper>
