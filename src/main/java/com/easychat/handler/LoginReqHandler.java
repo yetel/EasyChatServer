@@ -66,7 +66,7 @@ public class LoginReqHandler extends SimpleChannelInboundHandler<LoginReq> {
         String uUid = getToken();
         loginResp.setToken(uUid);
         SessionUtil.saveToken(user.getUserId(), uUid);
-        SessionUtil.bindSession(new Session(user.getUserId(), msg.getUserName(), user.getAvatar()), ctx.channel());
+        SessionUtil.bindSession(new Session(user.getUserId(), user.getUserName(), user.getAvatar()), ctx.channel());
 
         ctx.channel().writeAndFlush(loginResp);
         

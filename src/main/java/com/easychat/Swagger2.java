@@ -27,7 +27,7 @@ public class Swagger2 {
     public Docket createRestApi() {
 		
         return new Docket(DocumentationType.SWAGGER_2).select()
-                .apis(RequestHandlerSelectors.basePackage("com.easy.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.easychat.controller"))
                 .paths(PathSelectors.any())
                 .build();
         
