@@ -11,3 +11,9 @@
 3. 将application.properties中的spring.profiles.active配置为dev
 4. 从项目resource目录下面的sql目录获取表结构数据，运行创建表结构
 5. 说明文档可以查看resource目录下面的readme目录下的接口文档，基本接口信息都有记录
+
+
+## EasyChat相关开源项目
+
+#### JavaFX客户端：[EasyChatJavaFXClient](https://github.com/yetel/EasyChatJavaFXClient)
+#### Android客户端：[EasyChatAndroidClient](https://github.com/yetel/EasyChatAndroidClient)
